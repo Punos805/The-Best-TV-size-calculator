@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 50%;
+  height: 10px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<h1>해상도별 최적 TV 크기</h1>
+<p>교정시력과 시청거리를 조절 하세요.</p>
+
+<form action="">
+<div class="slidecontainer">
+  <input type="range" min="0.5" max="1.5" step="0.1" value="1.0" class="slider" id="myRange1"> 교정시력: <span id="demo1"></span>
+</div>
+<p></p>
+<div class="slidecontainer">
+  <input type="range" min="50" max="500" step="25" value="100" class="slider" id="myRange2">
+  시청거리: <span id="demo2"></span> cm
+  <p></p>
+     <input type="submit" style="WIDTH: 80pt; HEIGHT: 40pt" value="최적 인치 계산" onClick="showcal(); return false;">
+</form>
+
+  <p>FHD TV: <span id="idTV2"> ? </span> ~ <span id="idvTV2"> ? </span> inch</p>
+  <p>4K  TV: <span id="idTV4"> ? </span> ~ <span id="idvTV4"> ? </span> inch</p>
+  <p>8K  TV: <span id="idTV8"> ? </span> ~ <span id="idvTV8"> ? </span> inch</p>
+</div>
+
+</br>
+<hr align="left" style="width: 63%;">
+</br>
+<span style = " font-size:0.6em;  color: green;">
+Note : This size is calculated based on the reference resolving power of the eyes (Visual Acuity). 
+The human eye with 20/20 vision can detect or resolve details as small as 1/60th of a degree of arc. 
+This distance represents the point beyond which some details in the picture are no longer able to be resolved, so pixels begin to blend together. 
+</span>
+
+<script>
+
+var slider = document.getElementById("myRange1");
+var output = document.getElementById("demo1");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
+var slider2 = document.getElementById("myRange2");
+var output2 = document.getElementById("demo2");
+output2.innerHTML = slider2.value;
+
+slider2.oninput = function() {
+  output2.innerHTML = slider2.value;
+}
+
+
+function showcal() {
+     var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        
+        var que1 = this.responseText;
+        var Arr1 = [que1.split("~")];
+        
+        var scut1 = Arr1[0][0];
+        var scut1_2 = Arr1[0][1];
+        var scut1_3 = Arr1[0][2];
+        var scuta = Arr1[0][3];
+        var scut2 = Arr1[0][4];
+        var scut2_2 = Arr1[0][5];
+        var scut2_3 = Arr1[0][6];
+
+        scut1 = Math.round(Number(scut1));
+        scut1_2 = Math.round(Number(scut1_2));
+        scut1_3 = Math.round(Number(scut1_3));
+        scut2 = Math.round(Number(scut2));
+        scut2_2 = Math.round(Number(scut2_2));
+        scut2_3 = Math.round(Number(scut2_3));
+        
+        
+     if (scuta > 6.28){
+        scut2_3 = "시야각 초과";
+        scut2_2 = "시야각 초과";
+        scut2 = "시야각 초과";
+     }else if (scuta > 3.14){
+        scut2_3 = "시야각 초과";
+        scut2_2 = "시야각 초과";
+     }else if (scuta > 1.57){
+        scut2_3 = "시야각 초과";
+     }else {}
+     
+     if (scut2 > 200){
+        scut2_3 = "비추천";
+        scut2_2 = "비추천";
+        scut2 = "비추천";
+     }else if (scut2_2 > 200){
+        scut2_3 = "비추천";
+        scut2_2 = "비추천";
+     }else if (scut2_3 > 200){
+        scut2_3 = "비추천";
+     }else {}
+     
+
+        document.getElementById("idTV2").innerHTML = scut1;
+        document.getElementById("idTV4").innerHTML = scut1_2;
+        document.getElementById("idTV8").innerHTML = scut1_3;
+
+        document.getElementById("idvTV2").innerHTML = scut2;
+        document.getElementById("idvTV4").innerHTML = scut2_2;
+        document.getElementById("idvTV8").innerHTML = scut2_3;
+     
+      }
+    };
+    xmlhttp.open("POST", "cal.php", true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xmlhttp.send("aaa=" + slider2.value + "&bbb=" + slider.value);
+}
+
+
+</script>
+
+</body>
+</html>
